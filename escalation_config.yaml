@@ -1,0 +1,85 @@
+# Escalation Engine Configuration
+# This file configures the intelligent decision routing system
+
+# Default escalation thresholds for all characters
+default_thresholds:
+  # Bot will be used if confidence >= this value
+  bot_min_confidence: 0.7
+
+  # Brain will be used if confidence >= this value (when escalated from bot)
+  brain_min_confidence: 0.5
+
+  # Stakes levels (0.0 to 1.0)
+  high_stakes_threshold: 0.7      # Above this = use Brain
+  critical_stakes_threshold: 0.9  # Above this = use Human
+
+  # Time constraints
+  urgent_time_ms: 500      # Below this = urgent (can still use Bot)
+  critical_time_ms: 100    # Below this = critical (use Human)
+
+  # Novelty detection
+  novelty_threshold: 0.6   # Above this = novel situation (use Brain)
+
+  # Safety thresholds
+  hp_critical_threshold: 0.2        # Below this HP = critical (use Human)
+  resource_critical_threshold: 0.15 # Below this resources = critical
+
+  # Learning rates
+  confidence_boost_per_success: 0.05  # Lower threshold by this on success
+  confidence_penalty_per_failure: 0.1  # Raise threshold by this on failure
+
+# Character-specific threshold overrides
+# Uncomment and customize for specific characters
+# character_thresholds:
+#   warrior_1:
+#     bot_min_confidence: 0.6  # Warriors are confident, use bot more
+#     brain_min_confidence: 0.4
+#   wizard_1:
+#     bot_min_confidence: 0.8  # Wizards are cautious, escalate more
+#     brain_min_confidence: 0.6
+
+# LLM provider configurations
+llm_providers:
+  # OpenAI configuration (for HUMAN tier)
+  openai:
+    provider_type: openai
+    api_key: "${OPENAI_API_KEY}"  # Set via environment variable
+    model: gpt-3.5-turbo
+    cost_per_1k_tokens: 0.002
+    max_tokens: 500
+    temperature: 0.7
+    enabled: true
+
+  # Anthropic configuration (alternative for HUMAN tier)
+  anthropic:
+    provider_type: anthropic
+    api_key: "${ANTHROPIC_API_KEY}"
+    model: claude-3-haiku-20240307
+    cost_per_1k_tokens: 0.00025
+    max_tokens: 500
+    temperature: 0.7
+    enabled: false
+
+  # Ollama configuration (for BRAIN tier - local LLM)
+  ollama:
+    provider_type: ollama
+    base_url: "http://localhost:11434"
+    model: llama2
+    cost_per_1k_tokens: 0.0  # Local inference is free
+    enabled: true
+
+# Cost tracking settings
+cost_tracking:
+  enabled: true
+  daily_budget: 10.0        # Daily budget in USD
+  alert_threshold: 8.0      # Alert when cost reaches this amount
+
+  # Cost per decision by source (approximate)
+  cost_bot: 0.0
+  cost_brain: 0.0
+  cost_human: 0.02
+
+# General settings
+enable_learning: true   # Enable adaptive threshold adjustment
+enable_metrics: true    # Enable detailed metrics tracking
+log_level: INFO         # Logging level (DEBUG, INFO, WARNING, ERROR)
