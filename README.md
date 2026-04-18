@@ -2,6 +2,10 @@
 
 **Intelligent decision routing for 40x cost reduction through smart LLM usage**
 
+## 📚 Documentation
+
+Comprehensive documentation is available in [docs/COMPLETE_GUIDE.md](docs/COMPLETE_GUIDE.md).
+
 The Escalation Engine intelligently routes decisions through three tiers:
 
 1. **Bot** - Fast, deterministic, rule-based (free)
